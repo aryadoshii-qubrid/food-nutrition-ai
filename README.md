@@ -31,6 +31,26 @@ Built with enterprise-grade architecture, modular design, and production-ready c
 
 ---
 
+## 🎬 Demo
+
+### Main Dashboard
+![Main Dashboard](docs/screenshots/dashboard.png)
+*Clean, intuitive interface with sidebar controls and health goal selection*
+
+### Food Analysis Results
+![Analysis Results](docs/screenshots/analysis.png)
+*Comprehensive nutrition breakdown with health score and dietary compatibility badges*
+
+### Interactive Chat
+![Chat Interface](docs/screenshots/chat.png)
+*Context-aware Q&A with streaming responses and usage metrics*
+
+### Session Tracking
+![Session History](docs/screenshots/history.png)
+*Track all analyzed foods with timestamps and quick access to past analyses*
+
+---
+
 ## ✨ Features
 
 <table>
@@ -57,26 +77,6 @@ Built with enterprise-grade architecture, modular design, and production-ready c
 </td>
 </tr>
 </table>
-
----
-
-## 🎬 Demo
-
-### Main Dashboard
-![Main Dashboard](docs/screenshots/dashboard.png)
-*Clean, intuitive interface with sidebar controls and health goal selection*
-
-### Food Analysis Results
-![Analysis Results](docs/screenshots/analysis.png)
-*Comprehensive nutrition breakdown with health score and dietary compatibility badges*
-
-### Interactive Chat
-![Chat Interface](docs/screenshots/chat.png)
-*Context-aware Q&A with streaming responses and usage metrics*
-
-### Session Tracking
-![Session History](docs/screenshots/history.png)
-*Track all analyzed foods with timestamps and quick access to past analyses*
 
 ---
 
@@ -403,33 +403,6 @@ pip install -r requirements.txt
 - Memory: **< 200MB** (application)
 - CPU: **Low** (mostly I/O bound)
 - Network: **~50-200KB** per analysis
-
----
-
-## 🚢 Deployment
-
-### Local Development
-```bash
-streamlit run app.py
-```
-
-### Production Deployment
-
-**Streamlit Cloud:**
-1. Fork/upload repository to GitHub
-2. Connect to [share.streamlit.io](https://share.streamlit.io)
-3. Add secrets in dashboard settings
-4. Deploy
-
-**Docker:**
-```dockerfile
-FROM python:3.9-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-COPY . .
-CMD ["streamlit", "run", "app.py", "--server.port=8501"]
-```
 
 ---
 
