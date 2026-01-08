@@ -45,8 +45,8 @@ Built with enterprise-grade architecture, modular design, and production-ready c
 ![Chat Interface](docs/ss/chat.png)
 *Context-aware Q&A with streaming responses and usage metrics*
 
-### Session Tracking
-![Session History - Dark Theme](docs/ss/dark_dashboard.png)
+### Theme preference
+![Dark Theme](docs/ss/dark_dashboard.png)
 *The interface adapts to your preference with seamless Dark and Light mode switching.*
 
 ---
