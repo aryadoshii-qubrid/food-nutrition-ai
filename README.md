@@ -34,20 +34,20 @@ Built with enterprise-grade architecture, modular design, and production-ready c
 ## 🎬 Demo
 
 ### Main Dashboard
-![Main Dashboard](docs/screenshots/dashboard.png)
+![Main Dashboard](docs/ss/dashboard.png)
 *Clean, intuitive interface with sidebar controls and health goal selection*
 
 ### Food Analysis Results
-![Analysis Results](docs/screenshots/analysis.png)
+![Analysis Results](docs/ss/analysis.png)
 *Comprehensive nutrition breakdown with health score and dietary compatibility badges*
 
 ### Interactive Chat
-![Chat Interface](docs/screenshots/chat.png)
+![Chat Interface](docs/ss/chat.png)
 *Context-aware Q&A with streaming responses and usage metrics*
 
 ### Session Tracking
-![Session History](docs/screenshots/history.png)
-*Track all analyzed foods with timestamps and quick access to past analyses*
+![Session History - Dark Theme](docs/ss/dark_dashboard.png)
+*The interface adapts to your preference with seamless Dark and Light mode switching.*
 
 ---
 
