@@ -1,55 +1,42 @@
-"""Parse AI responses for structured data"""
+"""Parse AI responses using Pydantic Schemas"""
+import json
 import re
+from .schemas import NutritionData
 
 def parse_nutrition_data(response_text: str) -> dict:
     """
-    Extract structured nutrition data from AI response
-    
-    Args:
-        response_text: Raw AI response text
-        
-    Returns:
-        Dictionary with parsed nutrition data
+    Parses AI response into strict Pydantic model and returns dictionary.
+    Handles cleanup of markdown formatting if present.
     """
-    data = {
-        'calories': None,
-        'protein': None,
-        'carbs': None,
-        'fat': None,
-        'fiber': None,
-        'health_score': None,
-        'dietary': {},
-        'dish_name': None
-    }
-    
-    # Extraction patterns
-    patterns = {
-        'calories': r'Calories:\s*(\d+)\s*kcal',
-        'protein': r'Protein:\s*(\d+\.?\d*)g',
-        'carbs': r'Carbohydrates:\s*(\d+\.?\d*)g',
-        'fat': r'Fat:\s*(\d+\.?\d*)g',
-        'fiber': r'Fiber:\s*(\d+\.?\d*)g',
-        'health_score': r'HEALTH SCORE:\s*(\d+)/100',
-        'dish_name': r'Dish Name:\s*(.+?)(?:\n|-)'
-    }
-    
-    # Extract values
-    for key, pattern in patterns.items():
-        match = re.search(pattern, response_text)
-        if match:
-            value = match.group(1).strip()
-            if key == 'dish_name':
-                data[key] = value
-            elif key in ['protein', 'carbs', 'fat', 'fiber']:
-                data[key] = float(value)
-            else:
-                data[key] = int(value)
-    
-    # Extract dietary compatibility
-    dietary_checks = ['Vegan', 'Vegetarian', 'Keto-Friendly', 'Gluten-Free', 'Dairy-Free', 'High-Protein']
-    for check in dietary_checks:
-        match = re.search(f'{check}:\\s*(Yes|No)', response_text)
-        if match:
-            data['dietary'][check] = match.group(1) == 'Yes'
-    
-    return data
+    try:
+        # 1. Clean the response (remove ```json ... ``` wrappers if AI adds them)
+        clean_text = response_text.strip()
+        if "```" in clean_text:
+            # Extract content inside code blocks
+            match = re.search(r"```(?:json)?(.*?)```", clean_text, re.DOTALL)
+            if match:
+                clean_text = match.group(1).strip()
+        
+        # 2. Parse JSON
+        # Handle common JSON errors (like trailing commas) loosely if needed
+        data_dict = json.loads(clean_text)
+        
+        # 3. Validate with Pydantic (This fixes types, e.g., "200" string -> 200 int)
+        validated_data = NutritionData(**data_dict)
+        
+        # 4. Return compatible dictionary for your UI
+        return validated_data.to_app_dict()
+
+    except (json.JSONDecodeError, ValueError) as e:
+        print(f"Parsing Error: {e}")
+        # Fallback: Return a "safe" empty structure so the app doesn't crash
+        return {
+            'dish_name': 'Error Parsing Food',
+            'calories': 0,
+            'protein': 0,
+            'carbs': 0,
+            'fat': 0,
+            'health_score': 0,
+            'dietary': {},
+            'error': str(e)
+        }
