@@ -1,80 +1,137 @@
 """UI display components"""
 import streamlit as st
 
-def display_nutrition_card(nutrition_data: dict):
-    """Display visual nutrition card"""
-    if not nutrition_data.get('calories'):
-        return
-    
-    st.markdown('<div class="nutrition-card-pro animate-fade-in"><h3>📊 Nutritional Breakdown</h3><div class="macro-grid-pro">', unsafe_allow_html=True)
-    
-    macros = [
-        ("🔥", nutrition_data.get('calories', 'N/A'), "Calories", "kcal"),
-        ("💪", nutrition_data.get('protein', 'N/A'), "Protein", "g"),
-        ("🌾", nutrition_data.get('carbs', 'N/A'), "Carbs", "g"),
-        ("🥑", nutrition_data.get('fat', 'N/A'), "Fat", "g")
-    ]
-    
-    for emoji, value, label, unit in macros:
-        unit_display = unit if value != 'N/A' else ''
-        st.markdown(f'''
-        <div class="macro-item-pro">
-            <div style="font-size: 2rem; margin-bottom: 0.5rem;">{emoji}</div>
-            <span class="macro-value-pro">{value}{unit_display}</span>
-            <span class="macro-label-pro">{label}</span>
-        </div>
-        ''', unsafe_allow_html=True)
-    
-    st.markdown("</div></div>", unsafe_allow_html=True)
+def display_macro_row(data: dict):
+    """Displays the horizontal nutrition bar with icons"""
+    calories = data.get('calories', 0)
+    protein = data.get('protein', 0)
+    carbs = data.get('carbs', 0)
+    fat = data.get('fat', 0)
 
-def display_health_score(score: int):
-    """Display health score with circular progress"""
-    if not score:
-        return
-    
-    if score >= 80:
-        color, rating, emoji = "#10b981", "Excellent", "🌟"
-    elif score >= 60:
-        color, rating, emoji = "#f59e0b", "Good", "👍"
-    else:
-        color, rating, emoji = "#ef4444", "Fair", "⚠️"
-    
-    circumference = 377
-    offset = circumference - (circumference * score / 100)
-    
-    st.markdown(f'''
-    <div class="health-score-container animate-fade-in">
-        <div class="score-circle">
-            <svg viewBox="0 0 120 120">
-                <circle class="score-circle-bg" cx="60" cy="60" r="54"/>
-                <circle class="score-circle-progress" cx="60" cy="60" r="54"
-                    style="stroke: {color}; stroke-dashoffset: {offset};"/>
-            </svg>
-            <div class="score-text">{score}</div>
+    # Uses the CSS classes defined in styles.py for dynamic theming
+    html_content = f"""
+    <div class="glass-card">
+        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.5rem;">
+            <span style="font-size: 1.2rem;">📊</span>
+            <span style="font-weight: 700; font-size: 1.1rem;" class="macro-value">Nutrition (per 100g):</span>
         </div>
-        <div class="score-details">
-            <h4>{emoji} Health Score: {rating}</h4>
-            <p>This food scores {score}/100 on our health index</p>
+        <div class="macro-container">
+            <div class="macro-item">
+                <span style="font-size: 1.5rem;">🔥</span>
+                <span class="macro-value">{calories}</span>
+                <span class="macro-label">Kcal</span>
+            </div>
+            <div class="macro-divider"></div>
+            <div class="macro-item">
+                <span style="font-size: 1.5rem;">💪</span>
+                <span class="macro-value">{protein}g</span>
+                <span class="macro-label">Protein</span>
+            </div>
+            <div class="macro-divider"></div>
+            <div class="macro-item">
+                <span style="font-size: 1.5rem;">🌾</span>
+                <span class="macro-value">{carbs}g</span>
+                <span class="macro-label">Carbs</span>
+            </div>
+            <div class="macro-divider"></div>
+            <div class="macro-item">
+                <span style="font-size: 1.5rem;">🥑</span>
+                <span class="macro-value">{fat}g</span>
+                <span class="macro-label">Fat</span>
+            </div>
         </div>
     </div>
-    ''', unsafe_allow_html=True)
+    """
+    st.markdown(html_content, unsafe_allow_html=True)
 
-def display_dietary_badges(dietary_info: dict):
-    """Display dietary compatibility badges"""
-    if not dietary_info:
-        return
+def display_health_bar(score: int):
+    """Displays the health score progress bar"""
+    if score is None: score = 0
     
-    st.markdown('<div class="dietary-badges-pro">', unsafe_allow_html=True)
+    if score >= 80:
+        color = "#10b981"
+        text = "Excellent"
+        icon = "🌟"
+    elif score >= 60:
+        color = "#f59e0b"
+        text = "Good"
+        icon = "👍"
+    elif score >= 40:
+        color = "#f97316"
+        text = "Fair"
+        icon = "⚠️"
+    else:
+        color = "#ef4444"
+        text = "Poor"
+        icon = "🛑"
+
+    html_content = f"""
+    <div class="glass-card">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <span style="font-size: 1.2rem;">🎯</span>
+                <span style="font-weight: 700; font-size: 1.1rem;" class="macro-value">Health Score:</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <span style="font-size: 1.5rem; font-weight: 800; color: {color};">{score}/100</span>
+                <span style="background: {color}; color: white; padding: 4px 12px; border-radius: 12px; font-weight: 600; font-size: 0.9rem;">{icon} {text}</span>
+            </div>
+        </div>
+        <div style="width: 100%; background: rgba(128,128,128,0.1); height: 12px; border-radius: 6px; overflow: hidden;">
+            <div style="width: {score}%; background: {color}; height: 100%; border-radius: 6px; transition: width 1s ease;"></div>
+        </div>
+    </div>
+    """
+    st.markdown(html_content, unsafe_allow_html=True)
+
+def display_metrics_footer(tokens, time_sec, tps):
+    """Displays the usage stats"""
+    st.markdown(f"""
+    <div style="display: flex; justify-content: center; gap: 2rem; padding: 1rem; margin-top: 3rem; opacity: 0.6; color: inherit;">
+        <span style="font-size: 0.85rem;">⚡ <b>{tokens}</b> Tokens</span>
+        <span style="font-size: 0.85rem;">⏱️ <b>{time_sec:.2f}s</b> Response</span>
+    </div>
+    """, unsafe_allow_html=True)
+
+def format_analysis_report(data: dict) -> str:
+    """Generates a clean markdown report from the structured JSON data"""
+    if not data:
+        return "No analysis data available."
+        
+    dish = data.get('dish_name', 'Unknown Dish')
+    insights = data.get('health_insights', [])
+    allergens = data.get('allergens', [])
+    dietary = data.get('dietary', {})
     
-    badge_emojis = {
-        'Vegan': '🌱', 'Vegetarian': '🥗', 'Keto-Friendly': '🥓',
-        'Gluten-Free': '🌾', 'Dairy-Free': '🥛', 'High-Protein': '💪'
-    }
+    # Format lists
+    dietary_list = [k.replace('_', ' ').title() for k, v in dietary.items() if v]
+    dietary_str = ", ".join(dietary_list) if dietary_list else "Standard Diet"
     
-    for diet, compatible in dietary_info.items():
-        badge_class = "badge-yes-pro" if compatible else "badge-no-pro"
-        icon = "✓" if compatible else "✗"
-        emoji = badge_emojis.get(diet, '🔸')
-        st.markdown(f'<span class="badge-pro {badge_class}">{icon} {emoji} {diet}</span>', unsafe_allow_html=True)
+    insights_str = ""
+    for insight in insights:
+        insights_str += f"- {insight}\n"
     
-    st.markdown('</div>', unsafe_allow_html=True)
+    allergens_str = ", ".join(allergens) if allergens else "None detected"
+
+    return f"""
+### 🍽️ {dish}
+
+**🎯 Health Score:** {data.get('health_score', 0)}/100
+
+**💡 Health Insights:**
+{insights_str}
+
+**⚠️ Allergens:**
+{allergens_str}
+
+**✅ Dietary Tags:**
+{dietary_str}
+
+**📊 Nutritional Values (per 100g):**
+- **Calories:** {data.get('calories', 0)} kcal
+- **Protein:** {data.get('protein', 0)}g
+- **Carbs:** {data.get('carbs', 0)}g
+- **Fat:** {data.get('fat', 0)}g
+- **Fiber:** {data.get('fiber', 0)}g
+- **Sugar:** {data.get('sugar', 0)}g
+"""
