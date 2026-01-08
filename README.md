@@ -79,6 +79,21 @@ Built with enterprise-grade architecture, modular design, and production-ready c
 </table>
 
 ---
+## 🛡️ Robustness & AI Safety (New!)
+
+To ensure enterprise-level reliability, this project implements two critical architectural patterns:
+
+### 1. Schema Enforcement (Pydantic)
+Instead of relying on fragile Regex parsing, we force the LLM to adhere to a strict data contract.
+- **What it does:** Uses `utils/schemas.py` to define exact data types (Integers for calories, Floats for macros).
+- **Why it matters:** Eliminates "parsing crashes" and ensures mathematical operations on nutrition data are always valid. If the AI output is malformed, the validator catches and repairs it before it reaches the UI.
+
+### 2. Few-Shot Chain-of-Thought Prompting
+We don't just ask for results; we teach the model *how* to think.
+- **What it does:** The system prompt (`prompts/nutrition_prompt.py`) includes specific "Few-Shot" examples of correct analyses.
+- **Why it matters:** Drastically reduces hallucinations. The model follows a proven reasoning path rather than guessing, resulting in significantly higher accuracy for complex mixed dishes.
+
+---
 
 ## 🚀 Quick Start
 
